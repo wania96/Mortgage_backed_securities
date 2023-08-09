@@ -1,0 +1,161 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Model Prediction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h1>Model Prediction</h1>
+    <form id="prediction-form">
+        <label for="prediction-type">Select Prediction Type:</label>
+        <select name="prediction-type" id="prediction-type">
+            <option value="classification">Classification</option>
+            <option value="regression">Regression</option>
+        </select>
+        <br>
+        <label for="DTI">DTI:</label>
+        <input type="text" name="DTI" id="DTI">
+        <br>
+        <label for="CreditRange">Credit Range:</label>
+        <input type="text" name="CreditRange" id="CreditRange">
+        <br>
+        <div id="classification-input">
+            <label for="MSA">MSA:</label>
+            <input type="text" name="MSA" id="MSA">
+            <br>
+            <label for="MIP">MIP:</label>
+            <input type="text" name="MIP" id="MIP">
+            <br>
+            <label for="OCLTV">OCLTV:</label>
+            <input type="text" name="OCLTV" id="OCLTV">
+            <br>
+            <label for="OrigUPB">OrigUPB:</label>
+            <input type="text" name="OrigUPB" id="OrigUPB">
+            <br>
+            <label for="PropertyState">Property State:</label>
+            <input type="text" name="PropertyState" id="PropertyState">
+            <br>
+            <label for="MonthsDelinquent">Months Delinquent:</label>
+            <input type="text" name="MonthsDelinquent" id="MonthsDelinquent">
+            <br>
+            <label for="LTV_Range">LTV Range:</label>
+            <input type="text" name="LTV_Range" id="LTV_Range">
+            <br>
+            <label for="RepPayRange">Rep Pay Range:</label>
+            <input type="text" name="RepPayRange" id="RepPayRange">
+        </div>
+        <div id="regression-input">
+            <label for="PPM">PPM:</label>
+            <input type="text" name="PPM" id="PPM">
+            <br>
+            <label for="NumBorrowers">Number of Borrowers:</label>
+            <input type="text" name="NumBorrowers" id="NumBorrowers">
+            <br>
+            <label for="ServicerName">Servicer Name:</label>
+            <input type="text" name="ServicerName" id="ServicerName">
+            <br>
+            <label for="EverDelinquent">Ever Delinquent:</label>
+            <input type="text" name="EverDelinquent" id="EverDelinquent">
+            <br>
+            <label for="IsFirstTimeHomebuyer">Is First Time Homebuyer:</label>
+            <input type="text" name="IsFirstTimeHomebuyer" id="IsFirstTimeHomebuyer">
+            <br>
+            <label for="monthly_income">Monthly Income:</label>
+            <input type="text" name="monthly_income" id="monthly_income">
+        </div>
+        <button type="button" onclick="predict()">Predict</button>
+    </form>
+    <div id="result"></div>
+
+    <script>
+        // Function to hide/show input fields based on prediction type selection
+        function showInputFields() {
+            const predictionType = document.getElementById('prediction-type').value;
+            const classificationInput = document.getElementById('classification-input');
+            const regressionInput = document.getElementById('regression-input');
+
+            if (predictionType === 'classification') {
+                classificationInput.style.display = 'block';
+                regressionInput.style.display = 'none';
+            } else {
+                classificationInput.style.display = 'none';
+                regressionInput.style.display = 'block';
+            }
+        }
+
+        // Function to make API request and get predictions
+        function predict() {
+            const predictionType = document.getElementById('prediction-type').value;
+            const DTI = document.getElementById('DTI').value;
+            const CreditRange = document.getElementById('CreditRange').value;
+            let data = {
+                "prediction_type": predictionType,
+                "input_data": {
+                    "DTI": DTI,
+                    "CreditRange": CreditRange
+                }
+            };
+
+            if (predictionType === 'classification') {
+                const MSA = document.getElementById('MSA').value;
+                const MIP = document.getElementById('MIP').value;
+                const OCLTV = document.getElementById('OCLTV').value;
+                const OrigUPB = document.getElementById('OrigUPB').value;
+                const PropertyState = document.getElementById('PropertyState').value;
+                const MonthsDelinquent = document.getElementById('MonthsDelinquent').value;
+                const LTV_Range = document.getElementById('LTV_Range').value;
+                const RepPayRange = document.getElementById('RepPayRange').value;
+
+                data["input_data"]["MSA"] = MSA;
+                data["input_data"]["MIP"] = MIP;
+                data["input_data"]["OCLTV"] = OCLTV;
+                data["input_data"]["OrigUPB"] = OrigUPB;
+                data["input_data"]["PropertyState"] = PropertyState;
+                data["input_data"]["MonthsDelinquent"] = MonthsDelinquent;
+                data["input_data"]["LTV_Range"] = LTV_Range;
+                data["input_data"]["RepPayRange"] = RepPayRange;
+            } else {
+                const PPM = document.getElementById('PPM').value;
+                const NumBorrowers = document.getElementById('NumBorrowers').value;
+                const ServicerName = document.getElementById('ServicerName').value;
+                const EverDelinquent = document.getElementById('EverDelinquent').value;
+                const IsFirstTimeHomebuyer = document.getElementById('IsFirstTimeHomebuyer').value;
+                const monthly_income = document.getElementById('monthly_income').value;
+
+                data["input_data"]["PPM"] = PPM;
+                data["input_data"]["NumBorrowers"] = NumBorrowers;
+                data["input_data"]["ServicerName"] = ServicerName;
+                data["input_data"]["EverDelinquent"] = EverDelinquent;
+                data["input_data"]["IsFirstTimeHomebuyer"] = IsFirstTimeHomebuyer;
+                data["input_data"]["monthly_income"] = monthly_income;
+            }
+
+            // Make the API request to the Flask app
+            fetch('/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Display the predictions
+                const resultDiv = document.getElementById('result');
+                resultDiv.innerHTML = `<p>Predictions: ${data.predictions}</p>`;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Display error message if any
+                const resultDiv = document.getElementById('result');
+                resultDiv.innerHTML = `<p>Error: ${error.message}</p>`;
+            });
+        }
+
+        // Add event listener to show/hide input fields based on prediction type selection
+        document.getElementById('prediction-type').addEventListener('change', showInputFields);
+        showInputFields(); // Call the function initially to set the correct input fields display
+    </script>
+</body>
+</html>

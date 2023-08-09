@@ -1,0 +1,66 @@
+/* static.css */
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f2f2f2; /* Change the background color */
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+    color: #007BFF; /* Set the title color */
+    margin-bottom: 30px; /* Add some spacing below the title */
+}
+
+form {
+    background-color: #fff; /* Set the form background color */
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Add a shadow to the form */
+    padding: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold; /* Make labels bold */
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px; /* Round the input corners */
+}
+
+select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px; /* Round the select corners */
+}
+
+button {
+    background-color: #007BFF;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px; /* Round the button corners */
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Add a smooth transition on hover */
+}
+
+button:hover {
+    background-color: #0056b3; /* Darker color on hover */
+}
+
+#result {
+    margin-top: 20px;
+    background-color: #fff; /* Set the result box background color */
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Add a shadow to the result box */
+}
